@@ -34,7 +34,7 @@ async def r(ctx: commands.Context, cmd: str):
 
     try:
         result, rolls = execute_dice_cmd(cmd)
-        await ctx.send(f'{query_author.mention}\n```python\n{result}\nRolls: {[{", ".join(str(x) for x in rolls)}]}```')
+        await ctx.send(f'{query_author.mention}\n```python\n{result}\nRolls: [{", ".join(str(x) for x in rolls)}]```')
 
     except:
         await ctx.send(f'{query_author.mention} Failed to evaluate command!')
