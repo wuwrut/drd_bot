@@ -45,9 +45,9 @@ def execute_expr(program) -> Tuple[int, List[int]]:
 
 def parse_dice_command(cmd: str):
     # CMD: EXPR
-    # EXPR: MUL_EXPR
-    # MUL_EXPR: ADD_EXPR [["*" | "/"] ADD_EXPR]*
-    # ADD_EXPR: PRIM [["+" | "-"] PRIM]*
+    # EXPR: ADD_EXPR
+    # ADD_EXPR: MUL_EXPR [["*" | "/"] MUL_EXPR]*
+    # MUL_EXPR: PRIM [["+" | "-"] PRIM]*
     # PRIM: NUMBER | ROLL_EXPR | "(" EXPR ")"
     # ROLL_EXPR: NUMBER "d" NUMBER
     # NUMBER: [0-9]+
@@ -68,22 +68,22 @@ class Parser:
         self.pos = 0
         self.parsed = []
 
-        self.mul_expr()
+        self.add_expr()
         return self.parsed
 
-    def mul_expr(self):
-        self.add_expr()
-
-        while self.look_ahead(0) in {"*", "/"}:
-            op = self.look_ahead(0)
-            self.advance()
-            self.add_expr()
-            self.emit(op)
-
     def add_expr(self):
-        self.prim()
+        self.mul_expr()
 
         while self.look_ahead(0) in {"+", "-"}:
+            op = self.look_ahead(0)
+            self.advance()
+            self.mul_expr()
+            self.emit(op)
+
+    def mul_expr(self):
+        self.prim()
+
+        while self.look_ahead(0) in {"*", "/"}:
             op = self.look_ahead(0)
             self.advance()
             self.prim()
@@ -94,7 +94,7 @@ class Parser:
 
         if tok == "(":
             self.advance()
-            self.mul_expr()
+            self.add_expr()
             self.consume(")")
 
         elif self.look_ahead(1) == "d":
