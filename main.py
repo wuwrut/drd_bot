@@ -91,7 +91,7 @@ async def cr(ctx: commands.Context, skill_val: int, mod: Optional[str] = None):
             result = "Success"
 
     rolls = [t * 10 for t in [base_roll[0], *modifiers]] + [units]
-    await ctx.send(f"{ctx.author.mention}\n```python\n{result} {final_roll}\nRolls: ({', '.join(str(x) for x in rolls)})```")
+    await ctx.send(f"{ctx.author.mention}\n```python\n{result} {final_roll}\nRolls: [{', '.join(str(x) for x in rolls)}]```")
 
 
 bot.run(os.getenv("DISCORD_BOT_TOKEN"))
