@@ -9,7 +9,7 @@ from command_parser import roll, execute_dice_cmd
 roll_validator = re.compile(r'[0-9d+-/*/() ]+')
 dice_mod_validator = re.compile(r'[1-9][0-9]*[bp]')
 
-bot = commands.Bot(command_prefix="/", intents=(discord.Intents(messages=True)))
+bot = commands.Bot(command_prefix="!", intents=(discord.Intents(messages=True)))
 
 
 @bot.event
