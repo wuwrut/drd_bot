@@ -6,7 +6,7 @@ from discord.ext import commands
 
 from command_parser import roll, execute_dice_cmd
 
-roll_validator = re.compile(r'[0-9d+-/*/() ]+')
+roll_validator = re.compile(r'[0-9d+-/*/() \\]+')
 dice_mod_validator = re.compile(r'[1-9][0-9]*[bp]')
 
 bot = commands.Bot(command_prefix="!", intents=(discord.Intents(messages=True)))
@@ -29,7 +29,7 @@ async def r(ctx: commands.Context, cmd: str):
         return
 
     if roll_validator.fullmatch(cmd) is None:
-        await ctx.send(f'{query_author.mention} Roll command can only contain: numbers, rolls in XdY format, +-*/(), space.')
+        await ctx.send(f'{query_author.mention} Roll command can only contain: numbers, rolls in XdY format, +-*/()\\, space.')
         return
 
     try:

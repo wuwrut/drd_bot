@@ -2,6 +2,8 @@ import operator
 import random
 from typing import Tuple, List
 
+VALID_CHARACTERS = {'d', '-', '+', '*', '/', '(', ')'}
+
 
 def roll(dices_to_roll: List[int], start_from_zero: bool = False) -> List[int]:
     if start_from_zero:
@@ -138,9 +140,13 @@ def tokenize_cmd(cmd: str):
         pos = 0
 
         while pos < len(raw_part):
-            if raw_part[pos] in {'d', '-', '+', '*', '/', '(', ')'}:
+            if raw_part[pos] in VALID_CHARACTERS:
                 tokens.append(raw_part[pos])
                 pos += 1
+
+            elif raw_part[pos] == '\\' and raw_part[pos+1] in VALID_CHARACTERS:
+                tokens.append(raw_part[pos+1])
+                pos += 2
 
             else:
                 num, pos = number(raw_part, pos)
