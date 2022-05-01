@@ -34,14 +34,14 @@ async def r(ctx: commands.Context, cmd: str):
 
     try:
         result, rolls = execute_dice_cmd(cmd)
-        await ctx.send(f'{query_author.mention}\n```md\n{result}\nRolls: ({", ".join(str(x) for x in rolls)})```')
+        await ctx.send(f'{query_author.mention}\n```python\n{result}\nRolls [{", ".join(str(x) for x in rolls)}]```')
 
     except:
         await ctx.send(f'{query_author.mention} Failed to evaluate command!')
 
 
 @bot.command()
-async def rc(ctx: commands.Context, skill_val: int, mod: Optional[str] = None):
+async def cr(ctx: commands.Context, skill_val: int, mod: Optional[str] = None):
     if skill_val > 100 or skill_val < 1:
         await ctx.send(f"{ctx.author.mention} Invalid skill value!")
         return
@@ -91,8 +91,7 @@ async def rc(ctx: commands.Context, skill_val: int, mod: Optional[str] = None):
             result = "Success"
 
     rolls = [t * 10 for t in [base_roll[0], *modifiers]] + [units]
-    rolls_str = ', '.join(str(x) for x in rolls)
-    await ctx.send(f"{ctx.author.mention}\n```md\n{result} {final_roll}\nRolls: ({rolls_str})```")
+    await ctx.send(f"{ctx.author.mention}\n```python\n{result} {final_roll}\nRolls: ({', '.join(str(x) for x in rolls)})```")
 
 
 bot.run(os.getenv("DISCORD_BOT_TOKEN"))
