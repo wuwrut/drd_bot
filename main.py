@@ -34,7 +34,7 @@ async def r(ctx: commands.Context, cmd: str):
 
     try:
         result, rolls = execute_dice_cmd(cmd)
-        await ctx.send(f'{query_author.mention}\n```python\n{result}\nRolls: [{", ".join(str(x) for x in rolls)}]```')
+        await ctx.send(f'{query_author.mention}\n```md\n{result}\nRolls: ({", ".join(str(x) for x in rolls)})```')
 
     except:
         await ctx.send(f'{query_author.mention} Failed to evaluate command!')
@@ -92,7 +92,7 @@ async def rc(ctx: commands.Context, skill_val: int, mod: Optional[str] = None):
 
     rolls = [t * 10 for t in [base_roll[0], *modifiers]] + [units]
     rolls_str = ', '.join(str(x) for x in rolls)
-    await ctx.send(f"{ctx.author.mention}\n```python\n{result} {final_roll}\nRolls: [{rolls_str}]```")
+    await ctx.send(f"{ctx.author.mention}\n```md\n{result} {final_roll}\nRolls: ({rolls_str})```")
 
 
 bot.run(os.getenv("DISCORD_BOT_TOKEN"))
