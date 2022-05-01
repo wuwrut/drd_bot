@@ -46,8 +46,8 @@ def execute_expr(program) -> Tuple[int, List[int]]:
 def parse_dice_command(cmd: str):
     # CMD: EXPR
     # EXPR: ADD_EXPR
-    # ADD_EXPR: MUL_EXPR [["*" | "/"] MUL_EXPR]*
-    # MUL_EXPR: PRIM [["+" | "-"] PRIM]*
+    # ADD_EXPR: MUL_EXPR [["+" | "-"] MUL_EXPR]*
+    # MUL_EXPR: PRIM [["*" | "/"] PRIM]*
     # PRIM: NUMBER | ROLL_EXPR | "(" EXPR ")"
     # ROLL_EXPR: NUMBER "d" NUMBER
     # NUMBER: [0-9]+
