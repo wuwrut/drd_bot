@@ -1,15 +1,16 @@
 import operator
-import random
+import numpy as np
 from typing import Tuple, List
 
 VALID_CHARACTERS = {'d', '-', '+', '*', '/', '(', ')'}
+RNG = np.random.default_rng()
 
 
-def roll(dices_to_roll: List[int], start_from_zero: bool = False) -> List[int]:
+def roll(dice: int, count: int = 1, start_from_zero: bool = False) -> np.array:
     if start_from_zero:
-        return [random.randint(0, x-1) for x in dices_to_roll]
+        return RNG.integers(0, dice, size=count)
     else:
-        return [random.randint(1, x) for x in dices_to_roll]
+        return RNG.integers(1, dice, size=count, endpoint=True)
 
 
 def execute_dice_cmd(cmd: str) -> Tuple[int, List[int]]:
@@ -32,9 +33,9 @@ def execute_expr(program) -> Tuple[int, List[int]]:
             stack.append(op)
         elif isinstance(op, tuple):
             dice_count, dice_limit = op
-            rolls = roll([dice_limit] * dice_count)
-            rolls_made += rolls
-            stack.append(sum(rolls))
+            rolls = roll(dice_limit, dice_count)
+            rolls_made += rolls.tolist()
+            stack.append(np.sum(rolls))
         else:
             right = stack.pop()
             left = stack.pop()
@@ -140,13 +141,12 @@ def tokenize_cmd(cmd: str):
         pos = 0
 
         while pos < len(raw_part):
-            if raw_part[pos] in VALID_CHARACTERS:
-                tokens.append(raw_part[pos])
+            if raw_part[pos] == '\\':
                 pos += 1
 
-            elif raw_part[pos] == '\\' and raw_part[pos+1] in VALID_CHARACTERS:
-                tokens.append(raw_part[pos+1])
-                pos += 2
+            elif raw_part[pos] in VALID_CHARACTERS:
+                tokens.append(raw_part[pos])
+                pos += 1
 
             else:
                 num, pos = number(raw_part, pos)

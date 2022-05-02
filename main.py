@@ -1,6 +1,7 @@
 import re
 from typing import Optional
 import os
+import numpy as np
 import discord
 from discord.ext import commands
 
@@ -50,26 +51,27 @@ async def cr(ctx: commands.Context, skill_val: int, mod: Optional[str] = None):
         await ctx.send(f"{ctx.author.mention} Invalid dice modifier!")
         return
 
-    base_roll = roll([10, 10], start_from_zero=True)
+    base_roll = roll(10, 2, start_from_zero=True)
 
     if mod is None:
         modifiers = []
         mod = 0
     else:
         mod_count = int(mod[:-1])
-        modifiers = roll([10] * mod_count, start_from_zero=True)
+        modifiers = roll(10, mod_count, start_from_zero=True)
         mod = -1 if mod[-1] == 'b' else 1
 
     units = base_roll[1]
-    all_rolls = [x * 10 + units for x in [base_roll[0], *modifiers]]
-    all_rolls = [100 if x == 0 else x for x in all_rolls]
+    all_rolls = np.concatenate([base_roll[0:1], modifiers]) * 10 + units
+    all_rolls[all_rolls == 0] = 100
+    all_rolls = all_rolls.astype(np.int32)
 
     if mod == 0:
         final_roll = all_rolls[0]
     elif mod == -1:
-        final_roll = min(all_rolls)
+        final_roll = np.min(all_rolls)
     else:
-        final_roll = max(all_rolls)
+        final_roll = np.max(all_rolls)
 
     if final_roll == 100:
         result = "Fumble!"
@@ -90,7 +92,7 @@ async def cr(ctx: commands.Context, skill_val: int, mod: Optional[str] = None):
         else:
             result = "Success"
 
-    rolls = [t * 10 for t in [base_roll[0], *modifiers]] + [units]
+    rolls = np.concatenate([np.concatenate([base_roll[0:1], modifiers]) * 10, [units]]).astype(np.int32)
     await ctx.send(f"{ctx.author.mention}\n```python\n{result} {final_roll}\nRolls: [{', '.join(str(x) for x in rolls)}]```")
 
 
